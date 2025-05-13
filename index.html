@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Avaliação de Desempenho - Goiania Tubos Inox</title>
+    <!-- Adicionando Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Adicionando jsPDF via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Adicionando html2canvas via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Todo o CSS vai aqui dentro -->
+    <style>
+        :root {
+            --primary-color: #1a5276;
+            --secondary-color: #3498db;
+            --accent-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --light-card-bg: #ffffff;
+            --light-text: #212529;
+            --light-border: #dee2e6;
+            --light-header-bg: var(--primary-color);
+            --light-header-text: #ffffff;
+
+            --dark-bg: #212529;
+            --dark-card-bg: #343a40;
+            --dark-text: #f8f9fa;
+            --dark-border: #495057;
+            --dark-header-bg: #1a1a1a;
+            --dark-header-text: #e9ecef;
+
+            --border-radius: 6px;
+            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
+
+            --bg-color: var(--light-bg);
+            --card-bg-color: var(--light-card-bg);
+            --text-color: var(--light-text);
+            --border-color: var(--light-border);
+            --header-bg-color: var(--light-header-bg);
+            --header-text-color: var(--light-header-text);
+
+            --primary-color-current: var(--primary-color);
+            --secondary-color-current: var(--secondary-color);
+            --secondary-color-current-rgb: 52, 152, 219;
+            /* RGB for #3498db */
+        }
+
+        body.dark-theme {
+            --bg-color: var(--dark-bg);
+            --card-bg-color: var(--dark-card-bg);
+            --text-color: var(--dark-text);
+            --border-color: var(--dark-border);
+            --header-bg-color: var(--dark-header-bg);
+            --header-text-color: var(--dark-header-text);
+
+            --primary-color-current: #5dade2;
+            --secondary-color-current: #85c1e9;
+            --secondary-color-current-rgb: 133, 193, 233;
+            /* RGB for #85c1e9 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin: 0;
+        }
+
+        header {
+            background-color: var(--header-bg-color);
+            color: var(--header-text-color);
+            padding: 12px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        #theme-toggle-btn {
+            background: none;
+            border: 1px solid transparent;
+            color: var(--header-text-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--border-radius);
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        #theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        body.dark-theme #theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .container.main-content {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            color: var(--text-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .card-header {
+            margin: -10px -10px 10px -10px;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: rgba(0, 0, 0, 0.02);
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark-theme .card-header {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .card-header h2 {
+            color: var(--primary-color-current);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .card-body {
+            padding-top: 0px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            background-color: var(--card-bg-color);
+            color: var(--text-color);
+            transition: border-color 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        ::placeholder {
+            color: var(--text-color);
+            opacity: 0.6;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--secondary-color-current);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(var(--secondary-color-current-rgb), 0.2);
+        }
+
+        .employee-data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .criteria-item {
+            background-color: rgba(0, 0, 0, 0.02);
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        body.dark-theme .criteria-item {
+            background-color: rgba(255, 255, 255, 0.04);
+            border-color: var(--dark-border);
+        }
+
+        .criteria-header,
+        .sub-criteria-header {
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
+        .title-tooltip-wrapper {
+            display: inline-flex;
+            align-items: baseline;
+        }
+
+        .criteria-title,
+        .sub-criteria-title {
+            display: inline;
+            margin-right: 0;
+        }
+
+        .tooltip {
+            font-size: 0.8rem;
+            cursor: help;
+            position: relative;
+            display: inline-block;
+            margin-left: 3px;
+            top: -2px;
+            color: var(--secondary-color-current);
+            background-color: rgba(var(--secondary-color-current-rgb), 0.1);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            background-color: var(--dark-bg);
+            color: var(--light-bg);
+            text-align: center;
+            border-radius: var(--border-radius);
+            padding: 8px 12px;
+            position: absolute;
+            z-index: 1;
+            bottom: 130%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            width: 180px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-theme .tooltip .tooltip-text {
+            background-color: var(--light-bg);
+            color: var(--dark-bg);
+        }
+
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--dark-bg) transparent transparent transparent;
+        }
+
+        body.dark-theme .tooltip .tooltip-text::after {
+            border-color: var(--light-bg) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .criteria-description {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        .rating-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .rating-option {
+            position: relative;
+            display: inline-block;
+        }
+
+        .rating-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .rating-option span {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+            text-align: center;
+            min-width: 30px;
+            box-sizing: border-box;
+        }
+
+        .rating-option input[type="radio"]:checked+span {
+            background-color: var(--secondary-color-current);
+            border-color: var(--secondary-color-current);
+            color: white;
+        }
+
+        body.dark-theme .rating-option input[type="radio"]:checked+span {
+            color: var(--dark-bg);
+        }
+
+        .rating-option:hover span {
+            border-color: var(--secondary-color-current);
+            background-color: rgba(var(--secondary-color-current-rgb), 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color-current);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #154360;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-theme .btn-primary:hover {
+            background-color: #7fb3d5;
+        }
+
+        .btn-secondary {
+            background-color: #adb5bd;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #868e96;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background-color: #d68910;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            transition: border-color 0.2s ease, color 0.2s ease;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .tab:hover {
+            color: var(--primary-color-current);
+            border-bottom-color: var(--primary-color-current);
+            opacity: 1;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--accent-color);
+            font-weight: 600;
+            opacity: 1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        footer.footer {
+            margin-top: 30px;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--card-bg-color);
+        }
+
+        @media (max-width: 768px) {
+            .employee-data-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                padding-bottom: 10px;
+            }
+
+            .tabs {
+                font-size: 0.9rem;
+            }
+
+            .tab {
+                padding: 8px 10px;
+            }
+        }
+
+        .dashboard-container {
+            padding: 10px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color-current);
+        }
+
+        .dashboard-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color-current);
+            margin: 0;
+            margin-bottom: 5px;
+        }
+
+        .dashboard-info p {
+            font-size: 0.8rem;
+            margin: 2px 0;
+            text-align: right;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .dashboard-info strong {
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .dashboard-section {
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #000000;
+            margin-top: 0;
+            margin-bottom: 8px;
+            padding-bottom: 3px;
+        }
+
+        .overall-score-section {
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            border: 1px solid #000000;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+        }
+
+        body.dark-theme .overall-score-section {
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+
+        .overall-score-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 5px 0;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 15px;
+            background-color: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color-current);
+            border-radius: 5px;
+            transition: width 0.5s ease-out, background-color 0.3s ease;
+            width: 0%;
+        }
+
+        .score-value {
+            text-align: right;
+            min-width: 70px;
+        }
+
+        .score-value .score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .score-value .max-score {
+            font-size: 0.9rem;
+            color: #333333;
+            opacity: 0.9;
+        }
+
+        .charts-section-reordered {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .full-width-chart {
+            width: 100%;
+        }
+
+        .radar-wrapper {
+            border: 1px solid #000000;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            background-color: #ffffff;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        body.dark-theme .radar-wrapper {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .radar-wrapper .section-title {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .radar-chart-container-large {
+            position: relative;
+            height: 550px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .bar-chart-wrapper {
+            border: 1px solid #000000;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            background-color: #ffffff;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 30px;
+        }
+
+        body.dark-theme .bar-chart-wrapper {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .bar-chart-wrapper .section-title {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .bar-chart-container-tall {
+            position: relative;
+            height: 350px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .points-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 70px;
+        }
+
+        .points-column {
+            border: 1px solid #000000;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            background-color: #ffffff;
+        }
+
+        body.dark-theme .points-column {
+            background-color: #ffffff;
+        }
+
+        .points-column .section-title {
+            margin-top: 0;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .points-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .points-list .italic {
+            font-style: italic;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .comments-section .section-title {
+            margin-bottom: 5px;
+        }
+
+        .comments-box {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 8px;
+            background-color: rgba(0, 0, 0, 0.01);
+            min-height: 100px;
+        }
+
+        body.dark-theme .comments-box {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .comments-content {
+            font-family: inherit;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text-color);
+            margin: 0;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        .hide-for-pdf {
+            display: none !important;
+        }
+
+        .pdf-notes-table span.checked-value {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .pdf-feedback-value {
+            font-size: 8pt;
+            line-height: 1.3;
+            white-space: pre-line;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        /* --- REMOVER ESTILOS PARA LAYOUT DE COLUNAS --- */
+        /*
+        .pdf-main-layout { ... }
+        .pdf-left-column { ... }
+        .pdf-right-column { ... }
+        .pdf-left-column .pdf-section-title, ... { ... }
+        .pdf-left-column > div, ... { ... }
+        .pdf-right-column .pdf-table { ... }
+        */
+        /* --- FIM REMOVER ESTILOS --- */
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-icon">📊</div>
+                <div class="logo-text">
+                    <h1>Goiania Tubos Inox</h1>
+                    <p>Avaliação de Desempenho</p>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" title="Alternar Tema">🌙</button>
+        </div>
+    </header>
+
+    <div class="container main-content">
+
+        <div class="tabs">
+            <div class="tab active" data-tab="form">Formulário</div>
+            <div class="tab" data-tab="results">Resultados</div>
+        </div>
+
+        <div id="form-tab" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Dados do Funcionário</h2>
+                </div>
+                <div class="card-body">
+                    <div class="employee-data-grid">
+                        <div class="form-group">
+                            <label for="employee-name">Nome do Funcionário</label>
+                            <input type="text" id="employee-name" placeholder="Nome completo">
+                        </div>
+                        <div class="form-group department-selector">
+                            <label for="employee-department-select">Departamento</label>
+                            <select id="employee-department-select">
+                                <option value="">Selecione o departamento...</option>
+                                <option value="compras">Compras</option>
+                                <option value="faturamento">Faturamento</option>
+                                <option value="fiscal">Fiscal</option>
+                                <option value="contas_pagar">Contas a Pagar</option>
+                                <option value="contas_receber">Contas a Receber</option>
+                                <option value="rh">Recursos Humanos</option>
+                                <option value="comercial">Comercial</option>
+                                <option value="logistica">Logística</option>
+                            </select>
+                        </div>
+                        <div class="form-group evaluation-mode-selector">
+                            <label for="evaluation-mode">Modo de Avaliação</label>
+                            <select id="evaluation-mode">
+                                <option value="general">Geral (Padrão)</option>
+                                <option value="technical">Técnico (Por Estrutura)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluation-date">Data da Avaliação</label>
+                            <input type="date" id="evaluation-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="evaluator-name">Avaliador</label>
+                            <input type="text" id="evaluator-name" placeholder="Nome do avaliador">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Competências</h2>
+                </div>
+                <div class="card-body">
+                    <div id="dynamic-competencies-area">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Comentários e Feedback</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="strengths">Pontos Fortes</label>
+                        <textarea id="strengths" rows="3" placeholder="Descreva os pontos fortes..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="improvements">Pontos de Melhoria</label>
+                        <textarea id="improvements" rows="3" placeholder="Descreva os pontos a melhorar..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="action-plan">Plano de Ação</label>
+                        <textarea id="action-plan" rows="3" placeholder="Descreva as ações recomendadas..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="general-comments">Comentários Adicionais</label>
+                        <textarea id="general-comments" rows="3" placeholder="Outros comentários..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button id="reset-form" class="btn btn-secondary">Limpar</button>
+                <button id="calculate-results" class="btn btn-accent">Calcular Resultados</button>
+            </div>
+
+        </div>
+
+        <div id="results-tab" class="tab-content">
+            <div class="dashboard-container card">
+                <div class="dashboard-header">
+                    <div>
+                        <h2 class="dashboard-title">Resultado da Avaliação de Desempenho</h2>
+                    </div>
+                    <div class="dashboard-info">
+                        <p><strong>Funcionário:</strong> <span id="dashboard-employee-name">-</span></p>
+                        <p><strong>Departamento:</strong> <span id="dashboard-department">-</span></p>
+                        <p><strong>Data Avaliação:</strong> <span id="dashboard-eval-date">-</span></p>
+                    </div>
+                </div>
+
+                <div class="dashboard-section overall-score-section">
+                    <h3 class="section-title">Nota Geral</h3>
+                    <div class="overall-score-display">
+                        <div class="progress-bar-container">
+                            <div id="dashboard-overall-progress" class="progress-bar"></div>
+                        </div>
+                        <div class="score-value">
+                            <span id="dashboard-overall-score" class="score">-</span>
+                            <span class="max-score">/ 5.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-section charts-section-reordered">
+                    <div class="chart-container-wrapper radar-wrapper full-width-chart">
+                        <h3 class="section-title">Visão Geral das Competências (Radar)</h3>
+                        <div class="chart-container radar-chart-container-large">
+                            <canvas id="skills-radar-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-container-wrapper bar-chart-wrapper full-width-chart">
+                        <h3 class="section-title">Detalhamento da Avaliação (Barras)</h3>
+                        <div class="chart-container bar-chart-container-tall">
+                            <canvas id="category-bar-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-section points-section">
+                    <div class="points-column">
+                        <h3 class="section-title points-title strong"><span
+                                class="points-indicator strong"></span>Pontos Fortes</h3>
+                        <ul id="dashboard-strengths-list" class="points-list">
+                            <li class="italic">Calculando...</li>
+                        </ul>
+                    </div>
+                    <div class="points-column">
+                        <h3 class="section-title points-title weak"><span class="points-indicator weak"></span>Pontos de
+                            Melhoria</h3>
+                        <ul id="dashboard-weaknesses-list" class="points-list">
+                            <li class="italic">Calculando...</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="btn-group" style="margin-top: 10px;">
+                <button id="back-to-form" class="btn btn-secondary">Voltar ao Formulário</button>
+                <button id="download-dashboard-pdf" class="btn btn-primary">Download Dashboard PDF</button>
+                <button id="download-form-pdf" class="btn btn-accent">Download Formulário PDF</button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Sistema de Avaliação de Desempenho - Goiania Tubos Inox © 2024</p>
+        </div>
+    </footer>
+
+    <script src="competencias_softskills.js" defer></script>
+    <script src="competencias_tecnicas.js" defer></script>
+    <script src="script.js" defer></script>
+
+    <script>
+        const competenciasGeraisEstruturadas = [
+            {
+                categoriaId: "cat01",
+                categoriaNome: "Comunicação",
+                avaliacoes: [
+                    { id: "sub1.1", nome: "Clareza na expressão (escrita/oral)", tooltip: "Avalia a capacidade de comunicar ideias de forma clara e compreensível." },
+                    { id: "sub1.2", nome: "Escuta ativa e compreensão", tooltip: "Avalia a habilidade de ouvir atentamente para entender perspectivas." },
+                    { id: "sub1.3", nome: "Adaptação da comunicação ao público", tooltip: "Avalia a capacidade de ajustar a linguagem e o tom para diferentes interlocutores." }
+                ]
+            },
+            {
+                categoriaId: "cat02",
+                categoriaNome: "Colaboração e Trabalho em Equipe",
+                avaliacoes: [
+                    { id: "sub2.1", nome: "Disposição para ajudar e compartilhar", tooltip: "Avalia a proatividade em auxiliar colegas e compartilhar conhecimentos." },
+                    { id: "sub2.2", nome: "Construção de relacionamentos", tooltip: "Avalia a habilidade de criar e manter um ambiente de trabalho positivo." },
+                    { id: "sub2.3", nome: "Contribuição para objetivos comuns", tooltip: "Avalia o foco em metas compartilhadas e o espírito de equipe." }
+                ]
+            },
+            {
+                categoriaId: "cat03",
+                categoriaNome: "Resolução de Problemas",
+                avaliacoes: [
+                    { id: "sub3.1", nome: "Análise de situações complexas", tooltip: "Avalia a capacidade de decompor problemas e entender suas causas." },
+                    { id: "sub3.2", nome: "Proposta de soluções eficazes", tooltip: "Avalia a criatividade e pragmatismo na busca por soluções." },
+                    { id: "sub3.3", nome: "Tomada de decisão assertiva", tooltip: "Avalia a segurança e a fundamentação ao tomar decisões." }
+                ]
+            },
+            {
+                categoriaId: "cat04",
+                categoriaNome: "Adaptabilidade e Aprendizado",
+                avaliacoes: [
+                    { id: "sub4.1", nome: "Flexibilidade diante de mudanças", tooltip: "Avalia a capacidade de se ajustar a novos cenários e prioridades." },
+                    { id: "sub4.2", nome: "Abertura para aprender (habilidades/processos)", tooltip: "Avalia o interesse em adquirir novos conhecimentos e se desenvolver." },
+                    { id: "sub4.3", nome: "Resiliência em situações desafiadoras", tooltip: "Avalia a capacidade de manter a calma e a produtividade sob pressão." }
+                ]
+            },
+            {
+                categoriaId: "cat05",
+                categoriaNome: "Proatividade e Iniciativa",
+                avaliacoes: [
+                    { id: "sub5.1", nome: "Antecipação de necessidades/oportunidades", tooltip: "Avalia a capacidade de agir antes de ser solicitado." },
+                    { id: "sub5.2", nome: "Autonomia na execução de tarefas", tooltip: "Avalia a capacidade de realizar o trabalho com independência." },
+                    { id: "sub5.3", nome: "Busca por melhorias e otimizações", tooltip: "Avalia a iniciativa em identificar e sugerir aprimoramentos." }
+                ]
+            }
+        ];
+
+        function criarItemAvaliacaoHTML(avaliacao, tipo, groupName) {
+            const itemId = `aval-${avaliacao.id}`;
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'criteria-item sub-criteria';
+            itemDiv.innerHTML = `
+                <div class="criteria-header sub-criteria-header">
+                    <div class="title-tooltip-wrapper">
+                        <span class="criteria-title sub-criteria-title">${avaliacao.nome}</span>
+                         ${avaliacao.tooltip ? `<span class="tooltip">?<span class="tooltip-text">${avaliacao.tooltip}</span></span>` : ''}
+                    </div>
+                </div>
+                <div class="rating-group" data-competency-id="${avaliacao.id}" data-competency-type="${tipo}" data-category-id="${groupName}">
+                    ${[1, 2, 3, 4, 5].map(nota => `
+                        <label class="rating-option">
+                            <input type="radio" name="${itemId}" value="${nota}" required>
+                            <span>${nota}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            return itemDiv;
+        }
+
+        function criarItemCompetenciaTecnicaOuSoftskillHTML(competencia, tipo) {
+            const itemId = `${tipo}-${competencia.id}`;
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'criteria-item';
+            itemDiv.innerHTML = `
+                <div class="criteria-header">
+                    <div class="title-tooltip-wrapper">
+                        <span class="criteria-title">${competencia.nome}</span>
+                        ${competencia.tooltip ? `<span class="tooltip">?<span class="tooltip-text">${competencia.tooltip}</span></span>` : ''}
+                    </div>
+                </div>
+                <div class="criteria-description">${competencia.descricao || ''}</div>
+                <div class="rating-group" data-competency-id="${competencia.id}" data-competency-type="${tipo}">
+                    ${[1, 2, 3, 4, 5].map(nota => `
+                        <label class="rating-option">
+                            <input type="radio" name="${itemId}" value="${nota}" required>
+                            <span>${nota}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            return itemDiv;
+        }
+
+        function renderizarCompetencias() {
+            console.log("Renderizando competências...");
+            const evaluationModeSelect = document.getElementById('evaluation-mode');
+            const departmentSelect = document.getElementById('employee-department-select');
+            const competenciesContainer = document.getElementById('dynamic-competencies-area');
+
+            if (!evaluationModeSelect || !departmentSelect || !competenciesContainer) {
+                console.error("Erro ao renderizar: Elementos essenciais não encontrados (selects ou container).");
+                if (competenciesContainer) competenciesContainer.innerHTML = '<p style="color: red;">Erro ao renderizar competências. Verifique o console.</p>';
+                return;
+            }
+
+            const modo = evaluationModeSelect.value;
+            const departamentoId = departmentSelect.value;
+
+            competenciesContainer.innerHTML = '';
+
+            if (modo === 'general') {
+                console.log("Renderizando Modo Geral (5x3 estrutura)...");
+                if (typeof competenciasGeraisEstruturadas !== 'undefined' && Array.isArray(competenciasGeraisEstruturadas)) {
+                    competenciasGeraisEstruturadas.forEach(categoria => {
+                        const categoryDiv = document.createElement('div');
+                        categoryDiv.className = 'competency-category card';
+                        categoryDiv.innerHTML = `<h3 class="category-title">${categoria.categoriaNome}</h3>`;
+
+                        const subItemsContainer = document.createElement('div');
+                        subItemsContainer.className = 'sub-items-container';
+
+                        categoria.avaliacoes.forEach(avaliacao => {
+                            subItemsContainer.appendChild(criarItemAvaliacaoHTML(avaliacao, 'geral', categoria.categoriaId));
+                        });
+
+                        categoryDiv.appendChild(subItemsContainer);
+                        competenciesContainer.appendChild(categoryDiv);
+                    });
+                    console.log("Estrutura Geral renderizada.");
+                } else {
+                    console.error("Variável 'competenciasGeraisEstruturadas' não encontrada ou inválida.");
+                    competenciesContainer.innerHTML = '<p style="color: red;">Erro ao carregar estrutura de avaliação geral.</p>';
+                }
+
+            } else if (modo === 'technical') {
+                console.log("Renderizando Modo Técnico (Soft Skills + Técnicas)...");
+
+                if (typeof softSkills !== 'undefined' && Array.isArray(softSkills)) {
+                    const softSkillsHeader = document.createElement('h3');
+                    softSkillsHeader.textContent = 'Competências Comportamentais (Soft Skills)';
+                    softSkillsHeader.style.marginTop = '0';
+                    softSkillsHeader.style.marginBottom = '10px';
+                    competenciesContainer.appendChild(softSkillsHeader);
+                    softSkills.forEach(comp => {
+                        competenciesContainer.appendChild(criarItemCompetenciaTecnicaOuSoftskillHTML(comp, 'softskill'));
+                    });
+                    console.log(`${softSkills.length} soft skills renderizadas.`);
+                } else {
+                    console.error("Variável 'softSkills' não encontrada ou inválida.");
+                    competenciesContainer.innerHTML = '<p style="color: red;">Erro ao carregar competências comportamentais.</p>';
+                    return;
+                }
+
+                const techSkillsSeparator = document.createElement('hr');
+                techSkillsSeparator.style.marginTop = '25px';
+                techSkillsSeparator.style.marginBottom = '20px';
+                techSkillsSeparator.style.borderColor = 'var(--border-color)';
+                competenciesContainer.appendChild(techSkillsSeparator);
+
+                const techSkillsHeader = document.createElement('h3');
+                techSkillsHeader.textContent = 'Competências Técnicas';
+                techSkillsHeader.style.marginBottom = '10px';
+                competenciesContainer.appendChild(techSkillsHeader);
+
+                if (!departamentoId) {
+                    const selectDepartmentMsg = document.createElement('p');
+                    selectDepartmentMsg.textContent = 'Selecione um departamento acima para ver as competências técnicas específicas.';
+                    selectDepartmentMsg.style.fontStyle = 'italic';
+                    selectDepartmentMsg.style.color = 'var(--text-color)';
+                    selectDepartmentMsg.style.opacity = '0.8';
+                    competenciesContainer.appendChild(selectDepartmentMsg);
+                    console.log("Modo técnico selecionado, mas nenhum departamento escolhido.");
+                } else if (typeof competenciasTecnicasPorDepartamento !== 'undefined') {
+                    const tecnicasDepartamento = competenciasTecnicasPorDepartamento[departamentoId];
+                    if (tecnicasDepartamento && Array.isArray(tecnicasDepartamento) && tecnicasDepartamento.length > 0) {
+                        tecnicasDepartamento.forEach(comp => {
+                            competenciesContainer.appendChild(criarItemCompetenciaTecnicaOuSoftskillHTML(comp, 'tecnica'));
+                        });
+                        console.log(`${tecnicasDepartamento.length} competências técnicas renderizadas para o departamento ${departamentoId}.`);
+                    } else {
+                        const noTechSkillsMsg = document.createElement('p');
+                        noTechSkillsMsg.textContent = 'Nenhuma competência técnica específica cadastrada para este departamento.';
+                        noTechSkillsMsg.style.fontStyle = 'italic';
+                        competenciesContainer.appendChild(noTechSkillsMsg);
+                        console.warn(`Nenhuma competência técnica encontrada para o departamento ID: ${departamentoId}`);
+                    }
+                } else {
+                    console.error("Variável 'competenciasTecnicasPorDepartamento' não encontrada ou inválida.");
+                    const errorMsg = document.createElement('p');
+                    errorMsg.textContent = 'Erro ao carregar dados de competências técnicas por departamento.';
+                    errorMsg.style.color = 'red';
+                    competenciesContainer.appendChild(errorMsg);
+                }
+            } else {
+                competenciesContainer.innerHTML = '<p>Selecione um modo de avaliação.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const evaluationModeSelect = document.getElementById('evaluation-mode');
+            const departmentSelect = document.getElementById('employee-department-select');
+            const competenciesContainer = document.getElementById('dynamic-competencies-area');
+
+            if (!evaluationModeSelect || !departmentSelect || !competenciesContainer) {
+                console.error("Erro Crítico na Inicialização: Elementos essenciais (#evaluation-mode, #employee-department-select, ou #dynamic-competencies-area) não encontrados.");
+                if (competenciesContainer) competenciesContainer.innerHTML = '<p style="color: red;">Erro crítico na inicialização. Verifique o console.</p>';
+                return;
+            }
+
+            evaluationModeSelect.addEventListener('change', renderizarCompetencias);
+            departmentSelect.addEventListener('change', renderizarCompetencias);
+
+            renderizarCompetencias();
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleButton = document.getElementById('theme-toggle-btn');
+            const currentTheme = localStorage.getItem('theme') || 'light';
+
+            function applyTheme(theme) {
+                document.body.classList.toggle('dark-theme', theme === 'dark');
+                themeToggleButton.textContent = theme === 'dark' ? '☀️' : '🌙';
+                console.log(`Tema aplicado: ${theme}`);
+            }
+
+            applyTheme(currentTheme);
+
+            themeToggleButton.addEventListener('click', () => {
+                let newTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tabs .tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            if (tabs.length > 0 && tabContents.length > 0) {
+                console.log("Inicializando funcionalidade básica de tabs...");
+
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const targetTabId = tab.getAttribute('data-tab');
+                        console.log(`Tab clicada: ${targetTabId}`);
+
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tabContents.forEach(tc => tc.classList.remove('active'));
+
+                        tab.classList.add('active');
+                        const targetContent = document.getElementById(`${targetTabId}-tab`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                            console.log(`Conteúdo ativado: #${targetTabId}-tab`);
+                        } else {
+                            console.warn(`Conteúdo da tab #${targetTabId}-tab não encontrado.`);
+                        }
+                    });
+                });
+
+                const activeTab = document.querySelector('.tabs .tab.active');
+                const activeContentId = activeTab ? activeTab.getAttribute('data-tab') + '-tab' : null;
+                if (activeContentId) {
+                    const activeContent = document.getElementById(activeContentId);
+                    if (activeContent) {
+                        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                        activeContent.classList.add('active');
+                    }
+                }
+
+            } else {
+                console.log("Elementos de tabs não encontrados, funcionalidade não inicializada.");
+            }
+        });
+    </script>
+
+    <div id="pdf-form-template"
+        style="display: none; width: 190mm; margin: 0 auto; padding: 10mm 0mm; font-family: Arial, sans-serif; font-size: 10pt; color: #333;">
+        <style>
+            .pdf-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 15px;
+            }
+
+            .pdf-table th,
+            .pdf-table td {
+                border: 1px solid #ccc;
+                padding: 0px 4px;
+                text-align: left;
+                vertical-align: top;
+                font-size: 9pt;
+            }
+
+            .pdf-table th {
+                background-color: #e9ecef;
+                font-weight: bold;
+                font-size: 9pt;
+            }
+
+            .pdf-table td.label {
+                font-weight: bold;
+                width: 150px;
+                background-color: #f8f9fa;
+            }
+
+            .pdf-table td.value {}
+
+            .pdf-section-title {
+                font-size: 13pt;
+                font-weight: bold;
+                color: #1a5276;
+                margin-top: 15px;
+                margin-bottom: 8px;
+                border-bottom: 1px solid #1a5276;
+                padding-bottom: 3px;
+            }
+
+            .pdf-category-title {
+                font-size: 10pt;
+                font-weight: bold;
+                background-color: #f0f0f0;
+                padding: 5px 8px;
+                margin-top: 10px;
+                margin-bottom: 4px;
+                border: 1px solid #ddd;
+                border-bottom: none;
+            }
+
+            .pdf-notes-table td {
+                text-align: center;
+                width: 35px;
+            }
+
+            .pdf-notes-table td.competency-name {
+                text-align: left;
+                width: auto;
+            }
+
+            .pdf-notes-table input[type="radio"] {
+                display: none;
+            }
+
+            .pdf-notes-table span.checked-value {
+                font-weight: bold;
+                color: #000;
+            }
+
+            .pdf-feedback-value {
+                font-size: 8pt;
+                line-height: 1.3;
+                white-space: pre-line;
+                word-wrap: break-word;
+                vertical-align: middle;
+            }
+        </style>
+
+        <h1 style="text-align: center; color: #1a5276; margin-bottom: 0px; font-size: 15pt; margin-top: 0mm;">Ficha de
+            Avaliação de Desempenho</h1>
+        <p style="text-align: center; font-size: 7pt; margin-top: 0; margin-bottom: 5px;">Goiania Tubos Inox</p>
+
+        <h2 class="pdf-section-title" style="margin-top: 5px;">Dados do Colaborador e Avaliação</h2>
+        <table class="pdf-table employee-data" style="width: 100%;">
+            <tbody>
+                <!-- Linha 1: Nome e Departamento -->
+                <tr>
+                    <td class="label" style="width: 20%;">Nome:</td>
+                    <td class="value" id="pdf-form-employee-name" style="width: 30%;"></td>
+                    <td class="label" style="width: 20%;">Departamento:</td>
+                    <td class="value" id="pdf-form-department" style="width: 30%;" colspan="3"></td>
+                </tr>
+                <!-- Linha 2: Modo, Data e Avaliador -->
+                <tr>
+                    <td class="label" style="width: 20%;">Modo Aval.:</td>
+                    <td class="value" id="pdf-form-eval-mode" style="width: 30%;"></td>
+                    <td class="label" style="width: 20%;">Data Aval.:</td>
+                    <td class="value" id="pdf-form-eval-date" style="width: 10%;"></td>
+                    <td class="label" style="width: 10%;">Avaliador:</td>
+                    <td class="value" id="pdf-form-evaluator" style="width: 10%;"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="pdf-section-title">Competências Avaliadas</h2>
+        <div id="pdf-form-competencies-area">
+            <p style="font-style: italic;">Nenhuma competência para exibir.</p>
+        </div>
+
+        <h2 class="pdf-section-title">Comentários e Feedback</h2>
+        <table class="pdf-table feedback-data">
+            <tbody>
+                <tr>
+                    <td class="label" style="width: 25%;">Pontos Fortes:</td>
+                    <td class="value pdf-feedback-value" id="pdf-form-strengths" style="width: 75%;"></td>
+                </tr>
+                <tr>
+                    <td class="label" style="width: 25%;">Pontos de Melhoria:</td>
+                    <td class="value pdf-feedback-value" id="pdf-form-improvements" style="width: 75%;"></td>
+                </tr>
+                <tr>
+                    <td class="label" style="width: 25%;">Plano de Ação:</td>
+                    <td class="value pdf-feedback-value" id="pdf-form-action-plan" style="width: 75%;"></td>
+                </tr>
+                <tr>
+                    <td class="label" style="width: 25%;">Comentários Adicionais:</td>
+                    <td class="value pdf-feedback-value" id="pdf-form-general-comments" style="width: 75%;"></td>
+                </tr>
+                <tr>
+                    <td class="label" style="width: 25%;">Avaliação Final Gerada:</td>
+                    <td class="value pdf-feedback-value" id="pdf-final-evaluation-text"
+                        style="width: 75%; font-style: italic;">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="signatures-section" style="margin-top: 15px; page-break-inside: avoid;">
+            <table style="width: 100%; border: none;">
+                <tbody>
+                    <tr>
+                        <td style="width: 45%; text-align: center; border: none; padding-top: 30px;">
+                            <hr style="border-top: 1px solid #555; width: 80%; margin-bottom: 5px;">
+                            <span style="font-size: 9pt;">Assinatura do Avaliador</span>
+                        </td>
+                        <td style="width: 10%; border: none;"></td>
+                        <td style="width: 45%; text-align: center; border: none; padding-top: 30px;">
+                            <hr style="border-top: 1px solid #555; width: 80%; margin-bottom: 5px;">
+                            <span style="font-size: 9pt;">Assinatura do Funcionário</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div
+            style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #ccc; text-align: center; font-size: 8pt; color: #777;">
+            Documento gerado pelo Sistema de Avaliação de Desempenho
+        </div>
+    </div>
+
+</body>
+
+</html>
