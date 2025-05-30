@@ -4,75 +4,104 @@
 // e o valor é um array de objetos representando as competências técnicas para aquele departamento.
 
 const competenciasTecnicasPorDepartamento = {
+  "motoristas": [
+    { id: "mt01", nome: "Pontualidade Rotas", descricao: "Cumpre os horários de saída e retorno das rotas com pontualidade e responsabilidade." },
+    { id: "mt02", nome: "Entregas Seguras", descricao: "Realiza as entregas de forma segura, respeitando as leis de trânsito e as normas da empresa." },
+    { id: "mt03", nome: "Conferência Carga/NF", descricao: "Confere corretamente os volumes carregados e os dados da nota fiscal antes de sair para a entrega." },
+    { id: "mt04", nome: "Atendimento Cliente", descricao: "Trata os clientes com cordialidade e profissionalismo no momento da entrega." },
+    { id: "mt05", nome: "Conservação Veículo", descricao: "Cuida da conservação do veículo, informando a liderança sobre eventuais problemas ou manutenções necessárias." },
+    { id: "mt06", nome: "Uso EPIs", descricao: "Utiliza corretamente os EPIs durante carga, descarga e em outras atividades externas." },
+    { id: "mt07", nome: "Integridade Materiais", descricao: "Zela pela integridade dos materiais transportados, evitando avarias e perdas." },
+    { id: "mt08", nome: "Registro Ocorrências", descricao: "Registra e informa imediatamente qualquer ocorrência durante o trajeto (ex: avaria, recusa de material, acidente, atraso)." },
+    { id: "mt09", nome: "Documentação de Transporte Organizada.", descricao: "Mantém a documentação de transporte organizada (NF, CTE, canhotos, manifestos, etc.)." },
+    { id: "mt10", nome: "Colababoração com Equipe Logística.", descricao: "Colabora com a equipe de separação e conferência, quando necessário, com bom relacionamento." },
+    { id: "mt11", nome: "Cumprimento POPs/Segurança.", descricao: "Cumpre os procedimentos operacionais da empresa, incluindo orientações de segurança e POPs." },
+    { id: "mt12", nome: "Foco/Equilíbrio Pressão", descricao: "Demonstra atenção, foco e equilíbrio emocional mesmo sob pressão ou em situações adversas." }
+  ],
+  "separadores": [
+    { id: "sp01", nome: "Separação Correta Produtos.", descricao: "Separa corretamente os produtos de acordo com o pedido, sem trocas ou omissões." },
+    { id: "sp02", nome: "Uso do sistema ERP durante a separação", descricao: "Utiliza corretamente o sistema ERP durante a separação." },
+    { id: "sp03", nome: "Verificação validade/integridade de produtos.", descricao: "Verifica validade, integridade e condição dos produtos antes da separação." },
+    { id: "sp04", nome: "Identifica Divergências de Estoque", descricao: "Identifica e sinaliza divergências ou rupturas no estoque." },
+    { id: "sp05", nome: "Organização Produtos.", descricao: "Organiza os produtos separados de forma padronizada e lógica." },
+    { id: "sp06", nome: "Ambiente Limpo/Seguro", descricao: "Mantém o ambiente limpo, organizado e seguro durante a separação." },
+    { id: "sp07", nome: "Uso EPIs (Separação)", descricao: "Usa corretamente os EPIs exigidos pela empresa." },
+    { id: "sp08", nome: "Segue Ordem/Prioridade do Sistema.", descricao: "Segue rigorosamente a ordem e prioridades do sistema (não escolhe pedidos)." },
+    { id: "sp09", nome: "Prazo/Agilidade.", descricao: "Separa os produtos dentro do prazo estipulado, com agilidade e atenção." },
+    { id: "sp10", nome: "Evita Danos/Desperdícios.", descricao: "Atua com cuidado, evitando danos aos itens e desperdícios." },
+    { id: "sp11", nome: "Colabora com a equipe.", descricao: "Trabalha de forma colaborativa com conferentes e outros setores." },
+    { id: "sp12", nome: "Foco/Responsabilidade sob Pressão", descricao: "Mantém foco e responsabilidade, mesmo sob pressão ou em alta demanda." }
+  ],
+  "conferentes": [
+    { id: "cf01", nome: "Conferência aos Detalhes", descricao: "Confere os pedidos com atenção aos detalhes, evitando falhas e retrabalho." },
+    { id: "cf02", nome: "Uso de Sistema/Coletor de dados na conferência", descricao: "Utiliza corretamente o sistema e/ou coletor de dados na conferência." },
+    { id: "cf03", nome: "Identifica e Comunica Divergências.", descricao: "Identifica e comunica rapidamente itens divergentes, danificados ou faltantes." },
+    { id: "cf04", nome: "Confirma Validade/Integridade.", descricao: "Confirma validade e integridade dos produtos antes da liberação." },
+    { id: "cf05", nome: "Preenchimento Checklists", descricao: "Preenche corretamente checklists, registros e atualiza o sistema com precisão." },
+    { id: "cf06", nome: "Organização Produtos Conferidos", descricao: "Organiza os produtos conferidos de forma que facilite o fluxo logístico." },
+    { id: "cf07", nome: "Acuracidade de Estoque", descricao: "Garante a acuracidade do estoque com conferência precisa e disciplinada." },
+    { id: "cf08", nome: "Colabora com Equipe Logística.", descricao: "Trabalha de maneira colaborativa com separadores, motoristas e equipe." },
+    { id: "cf09", nome: "Uso EPIs (Conferência)", descricao: "Usa corretamente os EPIs e mantém a segurança no local de trabalho." },
+    { id: "cf10", nome: "Cumpre Prazos Operacionais", descricao: "Cumpre os prazos operacionais de conferência sem comprometer a qualidade." },
+    { id: "cf11", nome: "Segue POPs", descricao: "Segue os POPs estabelecidos para garantir conformidade e padrão." },
+    { id: "cf12", nome: "Iniciativa/Responsabilidade ao Problemas.", descricao: "Demonstra iniciativa e responsabilidade ao resolver problemas e dúvidas." }
+  ],
   "compras": [
-    { id: "cp01", nome: "Negociação com Fornecedores", descricao: "Habilidade em conduzir negociações para obter melhores preços, prazos e condições comerciais." },
-    { id: "cp02", nome: "Análise de Custo e Qualidade", descricao: "Capacidade de avaliar propostas considerando custo-benefício, qualidade dos produtos/serviços e reputação do fornecedor." },
-    { id: "cp03", nome: "Gestão de Contratos", descricao: "Conhecimento em elaboração, análise e acompanhamento de contratos de fornecimento." },
-    { id: "cp04", nome: "Conhecimento de Mercado", descricao: "Entendimento das tendências, principais players e dinâmica de preços do mercado fornecedor." },
-    { id: "cp05", nome: "Uso de Sistema ERP (Módulo Compras)", descricao: "Proficiência na utilização do sistema ERP para registro de pedidos, cotações e acompanhamento." },
-    { id: "cp06", nome: "Planejamento de Demanda", descricao: "Capacidade de analisar histórico e prever necessidades futuras para otimizar o estoque." }
+    { id: "cp01", nome: "Conhece Processos de Compras", descricao: "Possui conhecimento no processos de compras?" },
+    { id: "cp02", nome: "Negociação com Fornecedores", descricao: "Habilidade em negociação com fornecedores?" },
+    { id: "cp03", nome: "Comparação Fornecedores e Análise de Mercado", descricao: "Habilidade em comparação de fornecedores e análise de mercado interno?" },
+    { id: "cp04", nome: "Avaliação de Pedidos", descricao: "Avaliação de pedidos considerando qualidade e prazo?" },
+    { id: "cp05", nome: "Redução de Custos", descricao: "Estratégias para Redução de Custos?" },
+    { id: "cp06", nome: "Descontos/Condições", descricao: "Consegue negociar descontos ou melhores condições com os fornecedores?" },
+    { id: "cp07", nome: "Solução Problemas e Otimizações.", descricao: "Proatividade na solução de problemas e otimização de processos?" },
+    { id: "cp08", nome: "Análise e Tomada de Decisão", descricao: "Capacidade de análise e tomada de decisão?" },
+    { id: "cp09", nome: "Propõe Melhorias nos Processos", descricao: "O colaborador propõe soluções para melhorar os processos?" },
+    { id: "cp10", nome: "Decisão em Situações Complexas", descricao: "Qual sua capacidade de decisão diante de situações complexas?" },
+    { id: "cp11", nome: "Garante Pedidos Corretos", descricao: "Garante que os pedidos sejam feitos de forma correta, evitando erros e retrabalho?" },
+    { id: "cp12", nome: "Lida com Urgências/Imprevistos", descricao: "Como lida com urgências e imprevistos no processo de aquisição de produtos?" },
   ],
-  "faturamento": [
-    { id: "ft01", nome: "Emissão de Notas Fiscais", descricao: "Conhecimento dos procedimentos e legislação para emissão correta de NF-e e NFS-e." },
-    { id: "ft02", nome: "Cálculo de Impostos (ICMS, IPI, PIS/COFINS)", descricao: "Capacidade de calcular e conferir os impostos incidentes nas operações de venda." },
-    { id: "ft03", nome: "Conferência de Pedidos", descricao: "Atenção aos detalhes para garantir que os dados do pedido e da nota fiscal estejam consistentes." },
-    { id: "ft04", nome: "Uso de Sistema ERP (Módulo Faturamento)", descricao: "Proficiência na operação do sistema para emissão e gerenciamento de documentos fiscais." },
-    { id: "ft05", nome: "Resolução de Pendências Fiscais", descricao: "Habilidade em identificar e corrigir erros ou inconsistências em notas fiscais emitidas." },
-    { id: "ft06", nome: "Organização de Documentos", descricao: "Manutenção de arquivos digitais e físicos de forma organizada e acessível." }
+  "administrativo": [ // Inclui adm, fiscal, faturamento, contas a pagar e a receber, RH
+    { id: "ga01", nome: "Prazos/Organização", descricao: "Cumpre prazos estabelecidos com autonomia e organização." },
+    { id: "ga02", nome: "Conhecimento Técnico da Função", descricao: "Demonstra conhecimento técnico necessário para a função." },
+    { id: "ga03", nome: "Atenção Detalhes/Evita Erros", descricao: "Tem atenção aos detalhes e evita erros recorrentes." },
+    { id: "ga04", nome: "Comunicação Clara/Eficaz", descricao: "Comunica-se de forma clara e eficaz com colegas e liderança." },
+    { id: "ga05", nome: "Compromisso Objetivos", descricao: "É comprometido com os objetivos da empresa." },
+    { id: "ga06", nome: "Proatividade Resolução de Problemas", descricao: "Demonstra proatividade na resolução de problemas." },
+    { id: "ga07", nome: "Pressão/Adversidades", descricao: "Lida bem com pressão e situações adversas." },
+    { id: "ga08", nome: "Relacionamento Equipe", descricao: "Mantém bom relacionamento com a equipe." },
+    { id: "ga09", nome: "Recebe Feedbacks", descricao: "Recebe feedbacks com maturidade e aplica as orientações." },
+    { id: "ga10", nome: "Evolução Profissional", descricao: "Demonstra evolução profissional ao longo do tempo." },
+    { id: "ga11", nome: "Comportamento Ético", descricao: "Apresenta comportamento ético e conduta adequada." },
+    { id: "ga12", nome: "Responsabilidade com Entregas", descricao: "Demonstra responsabilidade com as entregas." }
   ],
-  "fiscal": [
-    { id: "fs01", nome: "Apuração de Impostos (ICMS, IPI, ISS, PIS/COFINS)", descricao: "Domínio do cálculo e apuração dos tributos diretos e indiretos." },
-    { id: "fs02", nome: "Entrega de Obrigações Acessórias (SPED, DCTF)", descricao: "Conhecimento dos prazos e procedimentos para entrega das declarações fiscais." },
-    { id: "fs03", nome: "Legislação Tributária", descricao: "Atualização constante sobre as leis e normas fiscais federais, estaduais e municipais." },
-    { id: "fs04", nome: "Classificação Fiscal (NCM/CFOP)", descricao: "Habilidade em classificar corretamente produtos e operações fiscais." },
-    { id: "fs05", nome: "Análise de Documentos Fiscais", descricao: "Capacidade de verificar a conformidade e correção dos documentos fiscais recebidos e emitidos." },
-    { id: "fs06", nome: "Planejamento Tributário Básico", descricao: "Identificação de oportunidades legais para otimização da carga tributária." }
-  ],
-  "contas_pagar": [
-    { id: "pg01", nome: "Lançamento e Conferência de Contas", descricao: "Registro e verificação de documentos (notas, boletos) para pagamento." },
-    { id: "pg02", nome: "Agendamento de Pagamentos", descricao: "Organização e controle dos vencimentos para garantir pagamentos pontuais." },
-    { id: "pg03", nome: "Conciliação Bancária (Pagamentos)", descricao: "Conferência dos pagamentos realizados com os extratos bancários." },
-    { id: "pg04", nome: "Relacionamento com Fornecedores (Financeiro)", descricao: "Comunicação clara sobre pagamentos, pendências e negociação de prazos." },
-    { id: "pg05", nome: "Uso de Sistema ERP (Módulo Financeiro)", descricao: "Proficiência na operação do sistema para controle de contas a pagar." },
-    { id: "pg06", nome: "Fluxo de Caixa (Previsão de Pagamentos)", descricao: "Capacidade de fornecer informações precisas sobre os desembolsos futuros." }
-  ],
-  "contas_receber": [
-    { id: "rc01", nome: "Emissão e Envio de Boletos/Cobranças", descricao: "Geração e controle do envio de documentos de cobrança aos clientes." },
-    { id: "rc02", nome: "Acompanhamento de Recebimentos", descricao: "Monitoramento dos pagamentos recebidos e identificação de pendências." },
-    { id: "rc03", nome: "Conciliação Bancária (Recebimentos)", descricao: "Conferência dos recebimentos nos extratos bancários com os registros do sistema." },
-    { id: "rc04", nome: "Ações de Cobrança", descricao: "Contato com clientes inadimplentes para negociação e recuperação de crédito." },
-    { id: "rc05", nome: "Análise de Crédito (Básica)", descricao: "Avaliação inicial do risco de crédito de novos clientes." },
-    { id: "rc06", nome: "Uso de Sistema ERP (Módulo Financeiro)", descricao: "Proficiência na operação do sistema para controle de contas a receber." }
-  ],
-  "rh": [
-    { id: "rh01", nome: "Processo de Recrutamento e Seleção", descricao: "Condução de etapas como divulgação de vagas, triagem de currículos, entrevistas e seleção de candidatos." },
-    { id: "rh02", nome: "Administração de Pessoal (Folha, Férias, Benefícios)", descricao: "Conhecimento dos processos de admissão, demissão, controle de ponto, cálculo de folha e gestão de benefícios." },
-    { id: "rh03", nome: "Legislação Trabalhista e Previdenciária", descricao: "Entendimento das leis e normas que regem as relações de trabalho." },
-    { id: "rh04", nome: "Treinamento e Desenvolvimento", descricao: "Identificação de necessidades, planejamento e execução de ações de treinamento." },
-    { id: "rh05", nome: "Comunicação Interna e Endomarketing", descricao: "Habilidade em comunicar informações relevantes aos colaboradores e promover o engajamento." },
-    { id: "rh06", nome: "Gestão de Clima Organizacional", descricao: "Aplicação de pesquisas e ações para manter um ambiente de trabalho positivo." }
-  ],
-  "comercial": [
-    { id: "cm01", nome: "Prospecção de Clientes", descricao: "Identificação e abordagem de potenciais clientes para geração de novas oportunidades de negócio." },
-    { id: "cm02", nome: "Técnicas de Vendas e Negociação", descricao: "Domínio de abordagens de vendas, contorno de objeções e fechamento de negócios." },
-    { id: "cm03", nome: "Conhecimento do Produto/Serviço", descricao: "Profundo entendimento das características, benefícios e diferenciais do que é vendido." },
-    { id: "cm04", nome: "Gestão de Relacionamento com Cliente (CRM)", descricao: "Uso de ferramentas e técnicas para manter um relacionamento duradouro e positivo com os clientes." },
-    { id: "cm05", nome: "Análise de Mercado e Concorrência", descricao: "Monitoramento das tendências de mercado e ações dos concorrentes para embasar estratégias." },
-    { id: "cm06", nome: "Elaboração de Propostas Comerciais", descricao: "Capacidade de criar propostas claras, persuasivas e adequadas às necessidades do cliente." }
-  ],
-  "logistica": [
-    { id: "lg01", nome: "Gestão de Estoque (Armazenagem e Controle)", descricao: "Organização do armazém, controle de entradas/saídas e acuracidade de inventário." },
-    { id: "lg02", nome: "Planejamento e Roteirização de Entregas", descricao: "Otimização das rotas e agendamento de entregas para eficiência e redução de custos." },
-    { id: "lg03", nome: "Contratação e Negociação de Fretes", descricao: "Busca e negociação com transportadoras para garantir as melhores condições de transporte." },
-    { id: "lg04", nome: "Conferência e Expedição de Mercadorias", descricao: "Verificação da conformidade dos produtos separados e organização da expedição." },
-    { id: "lg05", nome: "Uso de Sistema WMS/TMS (se aplicável)", descricao: "Proficiência em sistemas de gerenciamento de armazém e/ou transporte." },
-    { id: "lg06", nome: "Resolução de Problemas de Transporte", descricao: "Habilidade em lidar com imprevistos como atrasos, avarias ou devoluções." }
+  "rondonia_estrutural": [ // Competências comportamentais do questionário de avaliação
+ // Assiduidade
+    { id: "pc_as01", nome: "Assiduidade e Cumprimento de Horário", descricao: "O colaborador cumpre regularmente o horário estabelecido e mantém uma frequência estável no trabalho, demonstrando responsabilidade com a carga horária?" },
+    { id: "pc_as02", nome: "Comunicação de Ausências/Atrasos", descricao: "Comunica de forma adequada e proativa suas ausências ou atrasos, minimizando impactos na equipe?" },
+    { id: "pc_as03", nome: "Impacto da Presença na Equipe", descricao: "Sua presença contribui positivamente para a organização e o fluxo de trabalho da equipe?" },
+    // Proatividade
+    { id: "pc_pr01", nome: "Antecipação e Busca de Soluções", descricao: "Antecipadamente, busca soluções para possíveis problemas e propõe melhorias nos processos internos?" },
+    { id: "pc_pr02", nome: "Iniciativa e Contribuição de Ideias", descricao: "Demonstra iniciativa em aprender novas habilidades ou métodos de trabalho e contribui ativamente com ideias que agregam valor à equipe?" },
+    { id: "pc_pr03", nome: "Autonomia na Resolução de Desafios", descricao: "Participa ativamente da resolução de desafios e assume responsabilidades sem depender de orientações constantes?" },
+    // Assertividade
+    { id: "pc_at01", nome: "Comunicação Clara e Respeitosa", descricao: "Comunica-se de forma clara, objetiva e respeitosa, expressando suas opiniões de forma construtiva?" },
+    { id: "pc_at02", nome: "Escuta Ativa e Diálogo Profissional", descricao: "Escuta com atenção e responde de forma adequada e colaborativa, mantendo um diálogo profissional mesmo diante de opiniões divergentes?" },
+    { id: "pc_at03", nome: "Segurança e Responsabilidade na Tomada de Decisões", descricao: "Demonstra segurança e responsabilidade ao tomar decisões, sem gerar conflitos desnecessários?" },
+    // Desenvolvimento
+    { id: "pc_ds01", nome: "Evolução e Aprimoramento Contínuo", descricao: "Apresenta evolução no desempenho de suas atividades e busca constantemente o próprio aprimoramento profissional?" },
+    { id: "pc_ds02", nome: "Abertura a Novas Demandas e Adaptação", descricao: "Mostra abertura e disposição para se adaptar a novas demandas e desafios, refletindo progresso em seu desempenho?" },
+    { id: "pc_ds03", nome: "Aplicação de Feedbacks para Melhoria", descricao: "Solicita e aplica feedbacks de forma construtiva para melhorar seu rendimento e desempenho?" }
+
   ]
-  // Adicione outros departamentos e suas competências se necessário
+  // As competências de faturamento, fiscal, contas a pagar, contas a receber, RH e comercial
+  // que já existiam e não foram substituídas pelas novas categorias,
+  // permanecem inalteradas se não houver instrução para removê-las.
+  // Para este pedido, as categorias existentes de faturamento, fiscal, contas a pagar, contas a receber, RH e comercial
+  // foram mantidas como estavam no arquivo original, e as novas foram adicionadas ou substituídas.
+  // A categoria 'compras' foi completamente substituída.
 };
 
-// Renomeado para competenciasTecnicasPorDepartamento para clareza
 // Exporta o objeto (se usando módulos ES6)
 // export { competenciasTecnicasPorDepartamento };
 
-// Se não estiver usando módulos, estará disponível globalmente. 
+// Se não estiver usando módulos, estará disponível globalmente.

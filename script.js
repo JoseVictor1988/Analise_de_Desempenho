@@ -9,8 +9,8 @@ const COLORS = {
 };
 
 const SCORE_THRESHOLDS = {
-  fraco: 3.0, // Alterado para < 3.0
-  forte: 3.0  // Alterado para >= 3.0
+  fraco: 2.5, // Alterado para < 2.5
+  forte: 4.0  // Alterado para >= 4.0
 };
 
 // --- generateFinalEvaluationText --- (MOVIDA PARA O TOPO)
@@ -24,9 +24,9 @@ function generateFinalEvaluationText(results) {
   evaluationText += `Desempenho Geral: ${overallScore.toFixed(1)}/5.0. `;
   if (overallScore >= 4.0) {
     evaluationText += "Desempenho excelente, consistentemente superando as expectativas.";
-  } else if (overallScore >= 3.0) {
+  } else if (overallScore >= 3.5) {
     evaluationText += "Desempenho bom, atende às expectativas da função.";
-  } else if (overallScore >= 2.0) {
+  } else if (overallScore >= 3.0) {
     evaluationText += "Desempenho regular, com necessidade de desenvolvimento em alguns pontos.";
   } else if (overallScore > 0) {
     evaluationText += "Desempenho abaixo do esperado, requer atenção e plano de desenvolvimento claros.";
@@ -67,6 +67,9 @@ function generateFinalEvaluationText(results) {
 
 // --- calculateDynamicResults --- (Definição completa movida para cá)
 function calculateDynamicResults() {
+  // ... código existente ...
+  // NOVO: também retorna arrays de ids e tipos para uso nos gráficos
+
   console.log("Calculando resultados dinâmicos...");
   const evaluationMode = document.getElementById('evaluation-mode')?.value;
   const departmentId = document.getElementById('employee-department-select')?.value;
@@ -80,6 +83,7 @@ function calculateDynamicResults() {
   // 1. Coleta as notas que FORAM EFETIVAMENTE marcadas no formulário
   const criteriaItems = competenciesContainer.querySelectorAll('.criteria-item');
   let anyAnswered = false;
+  let missingCompetencies = [];
   criteriaItems.forEach(item => {
     const ratingGroup = item.querySelector('.rating-group');
     const checkedRadio = ratingGroup ? ratingGroup.querySelector('input[type="radio"]:checked') : null;
@@ -95,23 +99,46 @@ function calculateDynamicResults() {
         allEvaluatedCompetencies.push({ id: competencyId, nome: competencyName, tipo: competencyType, nota: score, categoryId: categoryId });
         anyAnswered = true;
       } else {
-        // Considera 'não avaliado' ou 0 se o valor não for número
         evaluatedScoresMap.set(competencyId, 0);
         allEvaluatedCompetencies.push({ id: competencyId, nome: competencyName, tipo: competencyType, nota: 0, categoryId: categoryId });
+        missingCompetencies.push(competencyName);
       }
     } else if (competencyId && competencyName && competencyType) {
       // Se o item existe mas não foi marcado
       if (!evaluatedScoresMap.has(competencyId)) {
-        evaluatedScoresMap.set(competencyId, 0); // Considera 0 se não marcado
+        evaluatedScoresMap.set(competencyId, 0);
         allEvaluatedCompetencies.push({ id: competencyId, nome: competencyName, tipo: competencyType, nota: 0, categoryId: categoryId });
+        missingCompetencies.push(competencyName);
       }
     }
   });
 
+  // Se faltou alguma competência obrigatória, alerta e cancela
+  if (missingCompetencies.length > 0 && !document.getElementById('pdf-form-template').contains(competenciesContainer)) {
+    showSystemMessage('Por favor, avalie todas as competências antes de prosseguir.', 'error');
+    // Destaca os campos não avaliados
+    criteriaItems.forEach(item => {
+      const ratingGroup = item.querySelector('.rating-group');
+      const checkedRadio = ratingGroup ? ratingGroup.querySelector('input[type="radio"]:checked') : null;
+      if (!checkedRadio) {
+        item.classList.add('highlight-error');
+      }
+    });
+    setTimeout(() => {
+      clearSystemMessage();
+    }, 8000);
+    return null;
+  }
+
   // Se absolutamente nada foi respondido, avisa e sai.
-  if (!anyAnswered && !document.getElementById('pdf-form-template').contains(competenciesContainer)) { // Adicionada checagem para não alertar durante a geração do PDF
-    alert("Nenhuma competência foi avaliada. Por favor, preencha o formulário.");
-    console.log("Cálculo cancelado - nenhuma competência avaliada.");
+  if (!anyAnswered && !document.getElementById('pdf-form-template').contains(competenciesContainer)) {
+    showSystemMessage('Nenhuma competência foi avaliada. Por favor, preencha o formulário.', 'error');
+    criteriaItems.forEach(item => {
+      item.classList.add('highlight-error');
+    });
+    setTimeout(() => {
+      clearSystemMessage();
+    }, 8000);
     return null;
   }
 
@@ -134,6 +161,8 @@ function calculateDynamicResults() {
   });
 
   // Processa Competências para Gráfico de Barras, Radar e Pontos Fortes/Fracos
+  let radarIds = [];
+  let radarTipos = [];
   if (evaluationMode === 'technical') {
     // --- MODO TÉCNICO ---
     console.log("Calculando para Modo Técnico...");
@@ -146,8 +175,10 @@ function calculateDynamicResults() {
       const score = evaluatedScoresMap.get(comp.id) ?? 0;
       radarLabels.push(comp.nome); // Nome da Soft Skill para o Radar
       radarScores.push(score);     // Nota da Soft Skill para o Radar
+      radarIds.push(comp.id);
+      radarTipos.push('softskill');
       if (score > 0) { // Só considera se avaliado para pontos F/F
-        strengthWeaknessDataSource.push({ nome: comp.nome, nota: score });
+        strengthWeaknessDataSource.push({ nome: comp.nome, nota: score, id: comp.id, tipo: 'softskill' });
       }
     });
 
@@ -158,12 +189,14 @@ function calculateDynamicResults() {
         const score = evaluatedScoresMap.get(comp.id) ?? 0;
         barLabels.push(comp.nome);
         barScores.push(score);
-        barCompetenciesData.push({ nome: comp.nome, nota: score });
+        barCompetenciesData.push({ nome: comp.nome, nota: score, id: comp.id, tipo: 'tecnica' });
         totalScores.tecnica += score;
         if (score > 0) counts.tecnica++;
-        strengthWeaknessDataSource.push({ nome: comp.nome, nota: score });
+        strengthWeaknessDataSource.push({ nome: comp.nome, nota: score, id: comp.id, tipo: 'tecnica' });
         radarLabels.push(comp.nome); // Nome da Técnica para o Radar
         radarScores.push(score);     // Nota da Técnica para o Radar
+        radarIds.push(comp.id);
+        radarTipos.push('tecnica');
       });
     }
 
@@ -187,7 +220,7 @@ function calculateDynamicResults() {
     allEvaluatedCompetencies.filter(c => c.tipo === 'geral').forEach(comp => {
       barLabels.push(comp.nome); // Nome da sub-avaliação
       barScores.push(comp.nota);
-      barCompetenciesData.push({ nome: comp.nome, nota: comp.nota });
+      barCompetenciesData.push({ nome: comp.nome, nota: comp.nota, id: comp.id, tipo: 'geral' });
 
       // Acumula para média da categoria
       if (comp.categoryId && categoryAverages[comp.categoryId]) {
@@ -203,10 +236,12 @@ function calculateDynamicResults() {
       const cat = categoryAverages[catId];
       cat.average = cat.count > 0 ? parseFloat((cat.total / cat.count).toFixed(1)) : 0;
       // Usa a MÉDIA DA CATEGORIA para os pontos fortes/fracos no modo geral
-      strengthWeaknessDataSource.push({ nome: cat.name, nota: cat.average });
+      strengthWeaknessDataSource.push({ nome: cat.name, nota: cat.average, id: catId, tipo: 'geral' });
       // Usa a MÉDIA DA CATEGORIA para o Radar no modo geral
       radarLabels.push(cat.name);
       radarScores.push(cat.average);
+      radarIds.push(catId); // Usa o id da categoria para abreviação
+      radarTipos.push('geral');
       console.log(`Categoria ${cat.name}: Média ${cat.average} (Total ${cat.total} / Count ${cat.count})`);
     });
 
@@ -228,18 +263,44 @@ function calculateDynamicResults() {
   console.log(`Bar Labels (${barLabels.length}):`, barLabels);
   console.log(`Bar Scores (${barScores.length}):`, barScores);
 
+  clearHighlightErrors();
+  showSystemMessage('Avaliação concluída com sucesso!', 'success');
+  setTimeout(() => {
+    clearSystemMessage();
+  }, 5000);
+
   return {
     overall: parseFloat(overallAverage),
-    behavioral: parseFloat(behavioralAverage),
-    technical: parseFloat(technicalAverage),
-    categoryAverages: categoryAverages,
-    labels: radarLabels,         // Labels para Radar (5 Cat no Geral, 7+6 no Técnico)
-    scores: radarScores,         // Scores para Radar (Médias Cat no Geral, Notas Ind. no Técnico)
-    barCompetencies: barCompetenciesData, // Dados para Gráfico de Barras (15 sub-avals ou 6 tecs)
-    strengthWeaknessData: strengthWeaknessDataSource, // Dados para Pts Fortes/Fracos (médias cat ou notas ind.)
-    counts: counts               // Contagem de notas > 0 por tipo
+    labels: radarLabels,
+    scores: radarScores,
+    radarIds: radarIds || [],
+    radarTipos: radarTipos || [],
+    barCompetencies: barCompetenciesData,
+    strengthWeaknessData: strengthWeaknessDataSource
   };
+
 }
+
+// Função utilitária para exibir mensagens no sistema
+// Atualizado: Agora exibe mensagens do sistema como alertas do navegador para máxima visibilidade.
+function showSystemMessage(msg, type) {
+  window.alert(msg);
+}
+
+function clearSystemMessage() {
+  const msgDiv = document.getElementById('system-message');
+  if (msgDiv) {
+    msgDiv.style.display = 'none';
+    msgDiv.textContent = '';
+  }
+}
+
+function clearHighlightErrors() {
+  document.querySelectorAll('.criteria-item.highlight-error').forEach(item => {
+    item.classList.remove('highlight-error');
+  });
+}
+
 
 // --- setTextContent --- (Definição completa movida para cá)
 function setTextContent(selector, text) {
@@ -292,7 +353,14 @@ function populateStrengthWeaknessList(listSelector, items, baseColor) {
 
 // --- generateRadarChart --- (Definição completa movida para cá)
 let radarChartInstance = null;
-function generateRadarChart(labels, dataScores) {
+function generateRadarChart(labels, dataScores, ids = [], tipos = []) {
+  // labels: array de nomes completos, ids: array de ids das competências, tipos: array de tipos (softskill, tecnica, geral)
+  // Se ids e tipos forem fornecidos, usa abreviações
+  let radarLabels = labels;
+  if (ids.length === labels.length && tipos.length === labels.length) {
+    radarLabels = labels.map((nome, idx) => getAbreviacaoByIdAndTipo(ids[idx], tipos[idx]) || nome);
+  }
+
   const ctx = document.getElementById('skills-radar-chart')?.getContext('2d');
   if (!ctx) {
     console.error("Contexto do gráfico Radar não encontrado.");
@@ -307,25 +375,17 @@ function generateRadarChart(labels, dataScores) {
       radarChartInstance.destroy();
       radarChartInstance = null;
     }
-    // Poderia exibir uma mensagem no lugar do canvas
-    return;
-  }
-
-  if (radarChartInstance) {
-    radarChartInstance.destroy(); // Destroi gráfico anterior se existir
-  }
-
-  // Verifica se Chart está definido (Chart.js carregado?)
-  if (typeof Chart === 'undefined') {
-    console.error("Chart.js não está carregado. Não é possível criar o gráfico Radar.");
     return;
   }
 
   try {
+    if (radarChartInstance) {
+      radarChartInstance.destroy(); // Destroi gráfico anterior se existir
+    }
     radarChartInstance = new Chart(ctx, {
       type: 'radar',
       data: {
-        labels: labels,
+        labels: radarLabels,
         datasets: [{
           label: 'Pontuação',
           data: dataScores,
@@ -415,14 +475,58 @@ function generateRadarChart(labels, dataScores) {
 
 // --- generateBarChart --- (Definição completa movida para cá)
 let barChartInstance = null;
+function getAbreviacaoByIdAndTipo(id, tipo) {
+  if (tipo === 'softskill' && typeof abreviacoesSoftSkills !== 'undefined') {
+    return abreviacoesSoftSkills[id] || id;
+  }
+  if (tipo === 'tecnica' && typeof abreviacoesTecnicas !== 'undefined') {
+    return abreviacoesTecnicas[id] || id;
+  }
+  if (tipo === 'geral' && typeof abreviacoesGerais !== 'undefined') {
+    // Se for uma sub (subX.Y), buscar dentro do objeto estruturado
+    if (/^sub\d+\.\d+$/.test(id)) {
+      for (const cat in abreviacoesGerais) {
+        if (abreviacoesGerais[cat] && abreviacoesGerais[cat].subs && abreviacoesGerais[cat].subs[id]) {
+          return abreviacoesGerais[cat].subs[id];
+        }
+      }
+    }
+    // Se for categoria
+    if (abreviacoesGerais[id] && abreviacoesGerais[id].nome) {
+      return abreviacoesGerais[id].nome;
+    }
+    // Compatibilidade para string direta
+    return abreviacoesGerais[id] || id;
+  }
+  return id;
+}
+
 function generateBarChart(competenciesData) {
+  // NOVO: Definição de cores para as barras
+  const getBarColor = (nota) => {
+    if (nota < 3) return '#FF7043'; // vermelho
+    if (nota < 3.7) return '#FFA000'; // amarelo
+    return '#66BB6A'; // verde
+  };
+
   const ctx = document.getElementById('category-bar-chart')?.getContext('2d');
   if (!ctx) {
     console.error("Contexto do gráfico de Barras não encontrado.");
     return;
   }
 
-  const labels = competenciesData.map(c => c.nome);
+  // Usa abreviações se disponíveis
+  const labels = competenciesData.map(c => {
+    // Tenta identificar o tipo da competência (softskill, tecnica, geral)
+    // Se não houver campo tipo, tenta inferir pelo id
+    let tipo = c.tipo;
+    if (!tipo && c.id) {
+      if (c.id.startsWith('ss')) tipo = 'softskill';
+      else if (c.id.startsWith('cp') || c.id.startsWith('tp') || c.id.startsWith('fp') || c.id.startsWith('rp')) tipo = 'tecnica';
+      else if (c.id.startsWith('sub')) tipo = 'geral';
+    }
+    return getAbreviacaoByIdAndTipo(c.id || c.nome, tipo) || c.nome;
+  });
   const dataValues = competenciesData.map(c => c.nota);
 
   // Determina a cor de cada barra
@@ -447,13 +551,13 @@ function generateBarChart(competenciesData) {
     barChartInstance = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
           label: 'Nota', // Label do dataset
           data: dataValues,
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
-          borderWidth: 1
+          backgroundColor: dataValues.map(getBarColor), // Cores dinâmicas
+          borderColor: dataValues.map(getBarColor),
+          borderWidth: 2
         }]
       },
       options: {
@@ -485,6 +589,9 @@ function generateBarChart(competenciesData) {
 
 // --- displayResults --- (Definição completa movida para cá)
 function displayResults(results) {
+  // ...
+  // NOVO: usar ids e tipos para passar ao radar
+
   if (!results) return;
 
   // --- Preencher Cabeçalho do Dashboard ---
@@ -522,7 +629,7 @@ function displayResults(results) {
 
   // --- Gerar Gráficos ---
   // Gráfico Radar: Sempre com as 7 Soft Skills
-  generateRadarChart(results.labels, results.scores);
+  generateRadarChart(results.labels, results.scores, results.radarIds || [], results.radarTipos || []);
 
   // Gráfico de Barras: 5 Gerais ou 6 Técnicas
   generateBarChart(results.barCompetencies); // Passa o array {nome, nota}
@@ -1032,5 +1139,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Inicializar a aba correta (se não for feito pelo script inline)
   // activateTab('form'); 
+
+  // Add event listener for rating changes
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('input[type="radio"]')) {
+      const criteriaItem = e.target.closest('.criteria-item');
+      if (criteriaItem) {
+        criteriaItem.classList.add('evaluated');
+      }
+    }
+  });
 
 }); // Fim do DOMContentLoaded

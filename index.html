@@ -25,14 +25,16 @@
             --light-header-text: #ffffff;
 
             --dark-bg: #212529;
-            --dark-card-bg: #343a40;
+            --dark-card-bg: #23272e;
             --dark-text: #f8f9fa;
             --dark-border: #495057;
-            --dark-header-bg: #1a1a1a;
+            --dark-header-bg: #181b1f;
             --dark-header-text: #e9ecef;
 
-            --border-radius: 6px;
-            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
+            --border-radius: 14px;
+            --box-shadow: 0 4px 24px 0 rgba(26, 82, 118, 0.13), 0 2px 8px 0 rgba(26, 82, 118, 0.10);
+            --box-shadow-deep: 0 8px 32px 0 rgba(26, 82, 118, 0.18), 0 4px 12px 0 rgba(26, 82, 118, 0.13);
+            --box-shadow-dark: 0 4px 24px 0 rgba(52, 152, 219, 0.15), 0 2px 8px 0 rgba(52, 152, 219, 0.12);
 
             --bg-color: var(--light-bg);
             --card-bg-color: var(--light-card-bg);
@@ -58,6 +60,8 @@
             --primary-color-current: #5dade2;
             --secondary-color-current: #85c1e9;
             --secondary-color-current-rgb: 133, 193, 233;
+            --box-shadow: var(--box-shadow-dark);
+            --box-shadow-deep: 0 8px 32px 0 rgba(52, 152, 219, 0.22), 0 4px 12px 0 rgba(52, 152, 219, 0.15);
             /* RGB for #85c1e9 */
         }
 
@@ -68,6 +72,8 @@
             line-height: 1.6;
             transition: background-color 0.3s ease, color 0.3s ease;
             margin: 0;
+            /* Mais profundidade na página principal */
+            box-shadow: 0 0 0 1px rgba(26,82,118,0.03), 0 16px 48px 0 rgba(26,82,118,0.10);
         }
 
         header {
@@ -137,30 +143,30 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 24px 24px 24px 24px;
         }
 
         .container.main-content {
-            padding-top: 20px;
-            padding-bottom: 20px;
+            padding-top: 32px;
+            padding-bottom: 32px;
         }
 
         .card {
             background-color: var(--card-bg-color);
             color: var(--text-color);
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow-deep);
+            padding: 24px 28px 22px 28px;
+            margin-bottom: 24px;
+            border: 1.5px solid var(--border-color);
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
         .card-header {
-            margin: -10px -10px 10px -10px;
-            padding: 8px 10px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: rgba(0, 0, 0, 0.02);
+            margin: -18px -18px 18px -18px;
+            padding: 14px 28px 14px 28px;
+            border-bottom: 2px solid var(--border-color);
+            background-color: rgba(26, 82, 118, 0.06);
             border-top-left-radius: var(--border-radius);
             border-top-right-radius: var(--border-radius);
             display: flex;
@@ -169,21 +175,22 @@
         }
 
         body.dark-theme .card-header {
-            background-color: rgba(255, 255, 255, 0.03);
+            background-color: rgba(133, 193, 233, 0.06);
         }
 
         .card-header h2 {
             color: var(--primary-color-current);
-            font-size: 1.1rem;
+            font-size: 1.19rem;
             margin: 0;
         }
 
         .card-body {
             padding-top: 0px;
+            padding-bottom: 0px;
         }
 
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 18px;
         }
 
         label {
@@ -191,7 +198,7 @@
             margin-bottom: 5px;
             font-weight: 500;
             color: var(--text-color);
-            font-size: 0.9rem;
+            font-size: 0.96rem;
         }
 
         input,
@@ -233,11 +240,22 @@
             border-radius: var(--border-radius);
             margin-bottom: 10px;
             border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .criteria-item.evaluated {
+            background-color: rgba(102, 187, 106, 0.1); /* Light green background */
+            border-color: rgba(102, 187, 106, 0.3);
         }
 
         body.dark-theme .criteria-item {
             background-color: rgba(255, 255, 255, 0.04);
             border-color: var(--dark-border);
+        }
+
+        body.dark-theme .criteria-item.evaluated {
+            background-color: rgba(102, 187, 106, 0.15); /* Slightly brighter green for dark theme */
+            border-color: rgba(102, 187, 106, 0.4);
         }
 
         .criteria-header,
@@ -459,10 +477,12 @@
 
         .tab-content {
             display: none;
+            padding: 0;
         }
 
         .tab-content.active {
             display: block;
+            padding: 0;
         }
 
         footer.footer {
@@ -496,29 +516,218 @@
             }
         }
 
-        .dashboard-container {
-            padding: 10px;
+        /* --- MODERN CONTAINER STYLES WITH DEPTH --- */
+        /* Corrige contraste modo escuro para textos e elementos interativos */
+        body.dark-theme,
+        body.dark-theme input,
+        body.dark-theme select,
+        body.dark-theme textarea,
+        body.dark-theme .btn,
+        body.dark-theme .tab,
+        body.dark-theme .section-title,
+        body.dark-theme .dashboard-title {
+            color: var(--text-color) !important;
+            background: none;
+            border-color: var(--border-color) !important;
         }
+        body.dark-theme input,
+        body.dark-theme textarea,
+        body.dark-theme select {
+            background-color: #23272e !important;
+            color: #f8f9fa !important;
+            border-color: #495057 !important;
+        }
+        body.dark-theme .btn-primary {
+            background-color: #5dade2 !important;
+            color: #23272e !important;
+        }
+        body.dark-theme .btn-primary:hover {
+            background-color: #3498db !important;
+            color: #fff !important;
+        }
+        body.dark-theme .btn-accent {
+            background-color: #f7ca62 !important;
+            color: #23272e !important;
+        }
+        body.dark-theme .btn-secondary {
+            background-color: #495057 !important;
+            color: #f8f9fa !important;
+        }
+        body.dark-theme label {
+            color: #f8f9fa !important;
+        }
+        body.dark-theme .tab.active {
+            color: #f7ca62 !important;
+            border-bottom-color: #f7ca62 !important;
+        }
+        body.dark-theme .tab {
+            color: #f8f9fa !important;
+        }
+        body.dark-theme .form-group {
+            color: #f8f9fa !important;
+        }
+        body.dark-theme .points-title.strong,
+        body.dark-theme .points-title.weak {
+            color: #5dade2 !important;
+        }
+.dashboard-container,
+.points-column,
+.bar-chart-wrapper,
+.radar-wrapper,
+.card {
+    background: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 32px 0 rgba(26, 82, 118, 0.15), 0 2px 8px 0 rgba(26, 82, 118, 0.09);
+    padding: 18px 18px;
+    margin-bottom: 14px;
+    border: none;
+    transition: box-shadow 0.3s, background 0.3s;
+}
+
+.dashboard-header-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.dashboard-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color-current);
+    margin: 0;
+    padding: 0;
+}
+
+.note-display {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 170px;
+}
+
+.note-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color-current);
+    margin-bottom: 3px;
+}
+
+.note-progress {
+    height: 8px;
+    width: 100%;
+    background: #eaeaea;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.note-progress-bar {
+    height: 100%;
+    width: 0; /* Será definido via JS */
+    background: linear-gradient(90deg, #2ecc71, #27ae60); /* Verde para notas altas */
+    border-radius: 4px;
+    transition: width 1s ease-out, background 0.5s;
+}
+
+.note-value {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--primary-color-current);
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+}
+
+.note-max {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 3px;
+}
+
+.employee-data-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.employee-data-field {
+    padding: 5px 14px;
+    background: #f4f8fb;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px 0 rgba(26,82,118,0.07);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1a5276;
+    display: flex;
+    align-items: center;
+}
+
+.employee-data-label {
+    font-weight: 600;
+    margin-right: 4px;
+    color: #1a5276;
+}
+
+.dashboard-section {
+    margin-bottom: 14px;
+    padding: 0;
+}
+
+.chart-container-wrapper {
+    margin-bottom: 14px;
+}
+
+@media (max-width: 700px) {
+    .dashboard-header-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .employee-data-row {
+        flex-direction: column;
+        gap: 6px;
+    }
+    .note-display {
+        max-width: 100%;
+    }
+}
+body.dark-theme .dashboard-container,
+body.dark-theme .points-column,
+body.dark-theme .bar-chart-wrapper,
+body.dark-theme .radar-wrapper,
+body.dark-theme .overall-score-section,
+body.dark-theme .card {
+    background: var(--card-bg-color);
+    box-shadow: var(--box-shadow-deep);
+    border: 1.5px solid var(--border-color);
+}
+/* --- END MODERN CONTAINER STYLES WITH DEPTH --- */
+.dashboard-container {
+    padding: 32px 32px 32px 32px;
+    margin-bottom: 32px;
+}
 
         .dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
             border-bottom: 2px solid var(--primary-color-current);
         }
 
         .dashboard-title {
-            font-size: 1.3rem;
+            font-size: 1.36rem;
             font-weight: 600;
             color: var(--primary-color-current);
             margin: 0;
-            margin-bottom: 5px;
+            margin-bottom: 12px;
         }
 
         .dashboard-info p {
-            font-size: 0.8rem;
+            font-size: 0.94rem;
             margin: 2px 0;
             text-align: right;
             color: var(--text-color);
@@ -535,20 +744,42 @@
             padding: 8px;
         }
 
-        .section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #000000;
-            margin-top: 0;
-            margin-bottom: 8px;
-            padding-bottom: 3px;
-        }
+        /* --- MODERN HIGHLIGHTED SECTION TITLES --- */
+.section-title,
+.dashboard-title,
+.comments-section .section-title,
+.overall-score-section .section-title,
+.charts-section-reordered .section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.13rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 12px;
+    padding: 7px 0 7px 12px;
+    border-left: 5px solid var(--primary-color-current);
+    background: linear-gradient(90deg, #eaf6fb 60%, transparent 100%);
+    letter-spacing: 0.5px;
+    border-radius: 5px 0 0 5px;
+    color: #1761a0;
+}
+
+body.dark-theme .section-title,
+body.dark-theme .dashboard-title,
+body.dark-theme .comments-section .section-title,
+body.dark-theme .overall-score-section .section-title,
+body.dark-theme .charts-section-reordered .section-title {
+    background: linear-gradient(90deg, #1b2a3a 60%, transparent 100%);
+    color: #5dade2;
+    border-left-color: #5dade2;
+}
+/* --- END MODERN HIGHLIGHTED SECTION TITLES --- */
 
         .overall-score-section {
             background-color: #ffffff;
             padding: 10px;
             border-radius: var(--border-radius);
-            border: 1px solid #000000;
+            border: 1px solid #00000000;
             width: 100%;
             margin-left: auto;
             margin-right: auto;
@@ -610,7 +841,7 @@
         }
 
         .radar-wrapper {
-            border: 1px solid #000000;
+            border: 1px solid #cac8c8;
             border-radius: var(--border-radius);
             padding: 15px;
             background-color: #ffffff;
@@ -640,7 +871,7 @@
         }
 
         .bar-chart-wrapper {
-            border: 1px solid #000000;
+            border: 1px solid #cac8c8;
             border-radius: var(--border-radius);
             padding: 10px;
             background-color: #ffffff;
@@ -648,7 +879,7 @@
             margin-right: auto;
             width: 100%;
             box-sizing: border-box;
-            margin-top: 30px;
+            margin-top: 10px;
         }
 
         body.dark-theme .bar-chart-wrapper {
@@ -674,18 +905,57 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 10px;
-            margin-top: 70px;
+            margin-top: 10px;
         }
 
         .points-column {
-            border: 1px solid #000000;
+            border: 1px solid #cac8c8;
             border-radius: var(--border-radius);
-            padding: 15px;
+            padding: 10px;
             background-color: #ffffff;
         }
 
         body.dark-theme .points-column {
-            background-color: #ffffff;
+            background-color: #232b34;
+            border-color: #444d5a;
+        }
+
+        .points-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.08rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 10px;
+            padding: 7px 0 7px 10px;
+            border-left: 5px solid var(--primary-color-current);
+            background: linear-gradient(90deg, #eaf6fb 60%, transparent 100%);
+            letter-spacing: 0.5px;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .points-title.strong {
+            color: #218838;
+            border-left-color: #218838;
+            background: linear-gradient(90deg, #eafaf1 60%, transparent 100%);
+        }
+
+        .points-title.weak {
+            color: #b30000;
+            border-left-color: #b30000;
+            background: linear-gradient(90deg, #fff0f0 60%, transparent 100%);
+        }
+
+        body.dark-theme .points-title.strong {
+            color: #52e27a;
+            border-left-color: #52e27a;
+            background: linear-gradient(90deg, #1b2a22 60%, transparent 100%);
+        }
+
+        body.dark-theme .points-title.weak {
+            color: #ff6b6b;
+            border-left-color: #ff6b6b;
+            background: linear-gradient(90deg, #3a2323 60%, transparent 100%);
         }
 
         .points-column .section-title {
@@ -778,6 +1048,7 @@
     </header>
 
     <div class="container main-content">
+      <div id="system-message" style="display:none;"></div>
 
         <div class="tabs">
             <div class="tab active" data-tab="form">Formulário</div>
@@ -800,19 +1071,17 @@
                             <select id="employee-department-select">
                                 <option value="">Selecione o departamento...</option>
                                 <option value="compras">Compras</option>
-                                <option value="faturamento">Faturamento</option>
-                                <option value="fiscal">Fiscal</option>
-                                <option value="contas_pagar">Contas a Pagar</option>
-                                <option value="contas_receber">Contas a Receber</option>
-                                <option value="rh">Recursos Humanos</option>
-                                <option value="comercial">Comercial</option>
-                                <option value="logistica">Logística</option>
+                                <option value="motoristas">Motorista</option>
+                                <option value="separadores">Separadores</option>
+                                <option value="conferentes">Conferentes</option>
+                                <option value="administrativo">Administrativo</option>
+                                <option value="rondonia_estrutural">Rondônia Estrutural</option>
                             </select>
                         </div>
                         <div class="form-group evaluation-mode-selector">
                             <label for="evaluation-mode">Modo de Avaliação</label>
                             <select id="evaluation-mode">
-                                <option value="general">Geral (Padrão)</option>
+                            <!---   <option value="general">Geral (Padrão) Removido por falta de necessidade no momento --->
                                 <option value="technical">Técnico (Por Estrutura)</option>
                             </select>
                         </div>
@@ -838,7 +1107,7 @@
                 </div>
             </div>
 
-            <div class="card">
+           <!-- <div class="card">
                 <div class="card-header">
                     <h2>Comentários e Feedback</h2>
                 </div>
@@ -860,7 +1129,7 @@
                         <textarea id="general-comments" rows="3" placeholder="Outros comentários..."></textarea>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="btn-group">
                 <button id="reset-form" class="btn btn-secondary">Limpar</button>
@@ -871,45 +1140,40 @@
 
         <div id="results-tab" class="tab-content">
             <div class="dashboard-container card">
-                <div class="dashboard-header">
-                    <div>
-                        <h2 class="dashboard-title">Resultado da Avaliação de Desempenho</h2>
-                    </div>
-                    <div class="dashboard-info">
-                        <p><strong>Funcionário:</strong> <span id="dashboard-employee-name">-</span></p>
-                        <p><strong>Departamento:</strong> <span id="dashboard-department">-</span></p>
-                        <p><strong>Data Avaliação:</strong> <span id="dashboard-eval-date">-</span></p>
+                <div class="dashboard-header-grid">
+                    <h2 class="dashboard-title">Resultado da Avaliação de Desempenho</h2>
+                    <div class="note-display">
+                        <div class="note-label">Nota Geral</div>
+                        <div class="note-progress">
+                            <div id="dashboard-overall-progress" class="note-progress-bar"></div>
+                        </div>
+                        <div class="note-value">
+                            <span id="dashboard-overall-score">-</span>
+                            <span class="note-max">/ 5.0</span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="dashboard-section overall-score-section">
-                    <h3 class="section-title">Nota Geral</h3>
-                    <div class="overall-score-display">
-                        <div class="progress-bar-container">
-                            <div id="dashboard-overall-progress" class="progress-bar"></div>
-                        </div>
-                        <div class="score-value">
-                            <span id="dashboard-overall-score" class="score">-</span>
-                            <span class="max-score">/ 5.0</span>
-                        </div>
-                    </div>
+                <div class="employee-data-row">
+                    <div class="employee-data-field"><span class="employee-data-label">Funcionário:</span> <span id="dashboard-employee-name">-</span></div>
+                    <div class="employee-data-field"><span class="employee-data-label">Departamento:</span> <span id="dashboard-department">-</span></div>
+                    <div class="employee-data-field"><span class="employee-data-label">Data Avaliação:</span> <span id="dashboard-eval-date">-</span></div>
                 </div>
 
                 <div class="dashboard-section charts-section-reordered">
                     <div class="chart-container-wrapper radar-wrapper full-width-chart">
-                        <h3 class="section-title">Visão Geral das Competências (Radar)</h3>
+                        <h3 class="section-title">Visão Geral das Competências</h3>
                         <div class="chart-container radar-chart-container-large">
                             <canvas id="skills-radar-chart"></canvas>
                         </div>
                     </div>
 
-                    <div class="chart-container-wrapper bar-chart-wrapper full-width-chart">
-                        <h3 class="section-title">Detalhamento da Avaliação (Barras)</h3>
+                   <!-- <div class="chart-container-wrapper bar-chart-wrapper full-width-chart">
+                        <h3 class="section-title">Detalhamento da Avaliação</h3>
                         <div class="chart-container bar-chart-container-tall">
                             <canvas id="category-bar-chart"></canvas>
                         </div>
                     </div>
-                </div>
+                </div>  Trecho comentado para melhorar a visualização do dasboard -->
 
                 <div class="dashboard-section points-section">
                     <div class="points-column">
@@ -941,12 +1205,15 @@
 
     <footer class="footer">
         <div class="container">
-            <p>Sistema de Avaliação de Desempenho - Goiania Tubos Inox © 2024</p>
+            <p>Sistema de Avaliação de Desempenho - Goiânia Tubos Inox 2025</p>
         </div>
     </footer>
 
     <script src="competencias_softskills.js" defer></script>
     <script src="competencias_tecnicas.js" defer></script>
+    <script src="abreviacoes_softskills.js" defer></script>
+    <script src="abreviacoes_tecnicas.js" defer></script>
+    <script src="abreviacoes_gerais.js" defer></script>
     <script src="script.js" defer></script>
 
     <script>
@@ -1344,57 +1611,56 @@
             <p style="font-style: italic;">Nenhuma competência para exibir.</p>
         </div>
 
-        <h2 class="pdf-section-title">Comentários e Feedback</h2>
+        <h2 class="pdf-section-title">Avaliação Final</h2>
         <table class="pdf-table feedback-data">
             <tbody>
                 <tr>
-                    <td class="label" style="width: 25%;">Pontos Fortes:</td>
-                    <td class="value pdf-feedback-value" id="pdf-form-strengths" style="width: 75%;"></td>
-                </tr>
-                <tr>
-                    <td class="label" style="width: 25%;">Pontos de Melhoria:</td>
-                    <td class="value pdf-feedback-value" id="pdf-form-improvements" style="width: 75%;"></td>
-                </tr>
-                <tr>
-                    <td class="label" style="width: 25%;">Plano de Ação:</td>
-                    <td class="value pdf-feedback-value" id="pdf-form-action-plan" style="width: 75%;"></td>
-                </tr>
-                <tr>
-                    <td class="label" style="width: 25%;">Comentários Adicionais:</td>
-                    <td class="value pdf-feedback-value" id="pdf-form-general-comments" style="width: 75%;"></td>
-                </tr>
-                <tr>
-                    <td class="label" style="width: 25%;">Avaliação Final Gerada:</td>
-                    <td class="value pdf-feedback-value" id="pdf-final-evaluation-text"
-                        style="width: 75%; font-style: italic;">
+                       
+                <td class="value pdf-feedback-value" id="pdf-form-strengths" style="width: 0%;"></td>
+            </tr>
+            <tr>
+                
+                <td class="value pdf-feedback-value" id="pdf-form-improvements" style="width: 0%;"></td>
+            </tr>
+            <tr>
+                
+                <td class="value pdf-feedback-value" id="pdf-form-action-plan" style="width: 0%;"></td>
+            </tr>
+            <tr>
+               
+                <td class="value pdf-feedback-value" id="pdf-form-general-comments" style="width: 0%;"></td>
+            </tr>
+            <tr>
+                <td class="label" style="width: 22%;">Avaliação Final Gerada:</td> 
+                <td class="value pdf-feedback-value" id="pdf-final-evaluation-text"
+                    style="width: 80%; font-style: italic;"> 
                     </td>
-                </tr>
-            </tbody>
-        </table>
+            </tr>
+        </tbody>
+    </table>
 
-        <div class="signatures-section" style="margin-top: 15px; page-break-inside: avoid;">
-            <table style="width: 100%; border: none;">
-                <tbody>
-                    <tr>
-                        <td style="width: 45%; text-align: center; border: none; padding-top: 30px;">
-                            <hr style="border-top: 1px solid #555; width: 80%; margin-bottom: 5px;">
-                            <span style="font-size: 9pt;">Assinatura do Avaliador</span>
-                        </td>
-                        <td style="width: 10%; border: none;"></td>
-                        <td style="width: 45%; text-align: center; border: none; padding-top: 30px;">
-                            <hr style="border-top: 1px solid #555; width: 80%; margin-bottom: 5px;">
-                            <span style="font-size: 9pt;">Assinatura do Funcionário</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="signatures-section" style="margin-top: 5px; page-break-inside: avoid;">
+    <table style="width: 100%; border: none;">
+        <tbody>
+            <tr>
+                <td style="width: 45%; text-align: center; border: none; padding-top: 10px;">
+                    <hr style="border-top: 1px solid #555; width: 80%; margin-bottom: 5px;">
+                    <span style="font-size: 9pt;">Assinatura do Avaliador</span>
+                </td>
+                <td style="width: 10%; border: none;"></td>
+                <td style="width: 45%; text-align: center; border: none; padding-top: 10px;">
+                    <hr style="border-top: 1px solid #555; width: 80%; margin-bottom: 5px;">
+                    <span style="font-size: 9pt;">Assinatura do Funcionário</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+     <!---  <div
+         style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #ccc; text-align: center; font-size: 8pt; color: #777;">
+            Documento gerado pelo Sistema de Avaliação de Desempenho 
         </div>
-
-        <div
-            style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #ccc; text-align: center; font-size: 8pt; color: #777;">
-            Documento gerado pelo Sistema de Avaliação de Desempenho
-        </div>
-    </div>
+    </div> --->
 
 </body>
 

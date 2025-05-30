@@ -1,48 +1,68 @@
 // Arquivo: competencias_softskills.js
-// Armazena as competências comportamentais (Soft Skills)
+// Armazena as competências comportamentais (Soft Skills) para avaliação geral.
 // Este é um array de objetos, onde cada objeto representa uma soft skill.
 
-const softSkills = [
+ const softSkills = [
+  // Gestão de Tempo e Organização
   {
-    id: "ss01", // Identificador único para a competência
-    nome: "Comunicação Efetiva",
-    descricao: "Habilidade de expressar ideias de forma clara, concisa e respeitosa, adaptando a linguagem ao público, e de ouvir ativamente para compreender diferentes perspectivas."
+    id: "gs01",
+    nome: "Gestão de Tempo e Organização: Cumpre Prazos",
+    descricao: "Cumpre prazos estabelecidos com autonomia e organização."
   },
+  
+  // Qualidade e Atenção
   {
-    id: "ss02",
-    nome: "Trabalho em Equipe e Colaboração",
-    descricao: "Capacidade de colaborar efetivamente com colegas, compartilhar conhecimentos, construir relacionamentos positivos e contribuir para um ambiente de equipe produtivo e harmonioso."
+    id: "gs03",
+    nome: "Qualidade e Atenção: Atenção aos Detalhes",
+    descricao: "Demonstra atenção aos detalhes, minimizando erros e retrabalho."
   },
+
+  // Comunicação e Colaboração
+  
   {
-    id: "ss03",
-    nome: "Resolução de Problemas e Tomada de Decisão",
-    descricao: "Aptidão para identificar problemas complexos, analisar informações de forma crítica, desenvolver soluções criativas e tomar decisões assertivas e oportunas."
+    id: "gs06",
+    nome: "Comunicação e Colaboração: Trabalho em Equipe",
+    descricao: "Colabora ativamente com a equipe, promovendo um bom relacionamento e ambiente produtivo."
   },
+ 
+  // Proatividade e Resolução de Problemas
   {
-    id: "ss04",
-    nome: "Adaptabilidade e Flexibilidade",
-    descricao: "Facilidade em se ajustar a novas situações, mudanças de prioridades, tecnologias e ambientes de trabalho dinâmicos, mantendo a performance e a resiliência."
+    id: "gs08",
+    nome: "Proatividade e Resolução de Problemas: Iniciativa",
+    descricao: "Demonstra iniciativa na busca por soluções e propõe melhorias nos processos internos."
   },
+ 
+  // Adaptabilidade e Resiliência
+  
   {
-    id: "ss05",
-    nome: "Proatividade e Iniciativa",
-    descricao: "Disposição para agir antecipadamente, identificar oportunidades de melhoria, buscar soluções sem necessidade de supervisão constante e assumir responsabilidade pelos resultados."
+    id: "gs11",
+    nome: "Adaptabilidade e Resiliência: Abertura a Mudanças",
+    descricao: "Mostra abertura e disposição para se adaptar a novas demandas, tecnologias e métodos de trabalho."
   },
+  // Comprometimento e Ética
+  
   {
-    id: "ss06",
-    nome: "Gestão do Tempo e Organização",
-    descricao: "Habilidade de planejar, priorizar tarefas, gerenciar o tempo de forma eficiente e manter a organização para cumprir prazos e alcançar objetivos."
+    id: "gs13",
+    nome: "Comprometimento e Ética: Conduta Profissional",
+    descricao: "Apresenta comportamento ético e conduta profissional adequada em todas as interações."
   },
+  // Desenvolvimento Contínuo
+  
   {
-    id: "ss07",
-    nome: "Inteligência Emocional",
-    descricao: "Capacidade de reconhecer e gerenciar as próprias emoções e as dos outros, utilizando essa percepção para orientar o pensamento e o comportamento de forma empática e construtiva."
-  }
-  // Adicione mais se necessário
+    id: "gs16",
+    nome: "Desenvolvimento Contínuo: Evolução Profissional",
+    descricao: "Demonstra evolução no desempenho de suas atividades ao longo do tempo na empresa."
+  },
+  // Assiduidade e Pontualidade
+  {
+    id: "gs17",
+    nome: "Assiduidade e Pontualidade: Cumprimento de Horário",
+    descricao: "O colaborador cumpre regularmente o horário estabelecido para início da jornada e comunica ausências/atrasos adequadamente."
+  },
 ];
 
 // Exporta o array para ser usado em outros scripts (se estiver usando módulos ES6)
 // export { softSkills };
 
 // Se não estiver usando módulos, a variável softSkills estará disponível globalmente
-// após incluir este script no HTML. 
+// após incluir este script no HTML.
