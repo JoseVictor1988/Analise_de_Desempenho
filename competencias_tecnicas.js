@@ -60,6 +60,19 @@ const competenciasTecnicasPorDepartamento = {
     { id: "cp11", nome: "Garante Pedidos Corretos", descricao: "Garante que os pedidos sejam feitos de forma correta, evitando erros e retrabalho?" },
     { id: "cp12", nome: "Lida com Urgências/Imprevistos", descricao: "Como lida com urgências e imprevistos no processo de aquisição de produtos?" },
   ],
+    "comercial": [
+    { id: "cm01", nome: "Prospecção de Clientes", descricao: "Identificação e abordagem de potenciais clientes para geração de novas oportunidades de negócio." },
+    { id: "cm02", nome: "Técnicas de Vendas e Negociação", descricao: "Domínio de abordagens de vendas, contorno de objeções e fechamento de negócios." },
+    { id: "cm03", nome: "Conhecimento do Produto/Serviço", descricao: "Profundo entendimento das características, benefícios e diferenciais do que é vendido." },
+    { id: "cm04", nome: "Gestão de Relacionamento com Cliente (CRM)", descricao: "Uso de ferramentas e técnicas para manter um relacionamento duradouro e positivo com os clientes." },
+    { id: "cm05", nome: "Análise de Mercado e Concorrência", descricao: "Monitoramento das tendências de mercado e ações dos concorrentes para embasar estratégias." },
+    { id: "cm06", nome: "Elaboração de Propostas Comerciais", descricao: "Capacidade de criar propostas claras, persuasivas e adequadas às necessidades do cliente." },
+    { id: "cm07", nome: "Proatividade na Captação de Clientes", descricao: "Demonstra proatividade e comprometimento na prospecção e captação de novos clientes, buscando ativamente novas oportunidades." },
+    { id: "cm08", nome: "Assertividade no Cadastro de Clientes", descricao: "Realiza o cadastro de clientes com assertividade e precisão, garantindo a integridade e correção dos dados." },
+    { id: "cm09", nome: "Foco e Atingimento de Metas", descricao: "Busca consistentemente o atingimento de suas metas individuais e contribui para as metas gerais da empresa." },
+    { id: "cm10", nome: "Sugestão de Ideias (Vendas e Equipe)", descricao: "Sugere ativamente ideias inovadoras para impulsionar a captação de clientes, aumentar vendas e aprimorar o desempenho da equipe." },
+    { id: "cm11", nome: "Habilidade na Conquista e Fidelização do Cliente", descricao: "Desenvolve e aplica abordagens eficazes para conquistar e fidelizar clientes, demonstrando excelência no relacionamento e na tratativa." }
+  ],
   "administrativo": [ // Inclui adm, fiscal, faturamento, contas a pagar e a receber, RH
     { id: "ga01", nome: "Prazos/Organização", descricao: "Cumpre prazos estabelecidos com autonomia e organização." },
     { id: "ga02", nome: "Conhecimento Técnico da Função", descricao: "Demonstra conhecimento técnico necessário para a função." },

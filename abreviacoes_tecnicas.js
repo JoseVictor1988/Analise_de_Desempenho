@@ -72,6 +72,19 @@ const abreviacoesTecnicas = {
   ga11: 'Comport. Ético',
   ga12: 'Responsab. Entregas',
 
+   // Comercial
+  cm01: 'Prosp. Clientes',
+  cm02: 'Vend./Negoc.',
+  cm03: 'Prod./Serv.',
+  cm04: 'CRM',
+  cm05: 'Merc./Concorr.',
+  cm06: 'Prop. Comerc.',
+  cm07: 'Proat. Cap. Clientes',
+  cm08: 'Assert. Cad. Clientes',
+  cm09: 'Foco/Ating. Metas',
+  cm10: 'Sug. Ideias Vendas/Equipe',
+  cm11: 'Conquista/Fideliz. Cliente',
+
   // Plano de Cargos e Salários (Competências Comportamentais)
   // Assiduidade
   pc_as01: 'Assiduidade e Cumprimento de Horário',
